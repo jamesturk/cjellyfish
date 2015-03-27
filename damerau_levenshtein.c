@@ -4,7 +4,7 @@
 #include <wchar.h>
 
 
-int damerau_levenshtein_distance(Py_UNICODE *s1, Py_UNICODE *s2, size_t len1, size_t len2)
+int damerau_levenshtein_distance(JFISH_UNICODE *s1, JFISH_UNICODE *s2, size_t len1, size_t len2)
 {
     size_t infinite = len1 + len2;
     size_t cols = len2 + 2;
@@ -40,7 +40,7 @@ int damerau_levenshtein_distance(Py_UNICODE *s1, Py_UNICODE *s2, size_t len1, si
     for (i = 1; i <= len1; i++) {
         db = 0;
         for (j = 1; j <= len2; j++) {
-            i1 = da[(Py_UNICODE)s2[j-1]];
+            i1 = da[(JFISH_UNICODE)s2[j-1]];
             j1 = db;
 
             if (s1[i - 1] == s2[j - 1]) {
@@ -58,7 +58,7 @@ int damerau_levenshtein_distance(Py_UNICODE *s1, Py_UNICODE *s2, size_t len1, si
             dist[((i+1)*cols) + j + 1] = MIN(MIN(d1, d2), MIN(d3, d4));
         }
 
-        da[(Py_UNICODE)s1[i-1]] = i;
+        da[(JFISH_UNICODE)s1[i-1]] = i;
     }
 
     result = dist[((len1+1) * cols) + len2 + 1];

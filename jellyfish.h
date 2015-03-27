@@ -3,7 +3,11 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+
+#if CJELLYFISH_PYTHON
 #include <Python.h>
+#define JFISH_UNICODE Py_UNICODE
+#endif
 
 #ifndef MIN
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -16,7 +20,8 @@ size_t hamming_distance(const char *str1, const char *str2);
 
 int levenshtein_distance(const char *str1, const char *str2);
 
-int damerau_levenshtein_distance(Py_UNICODE *str1, Py_UNICODE *str2, size_t len1, size_t len2);
+int damerau_levenshtein_distance(
+        JFISH_UNICODE *str1, JFISH_UNICODE *str2, size_t len1, size_t len2);
 
 char* soundex(const char *str);
 
