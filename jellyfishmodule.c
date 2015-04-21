@@ -15,8 +15,10 @@ static struct jellyfish_state _state;
 
 #if PY_MAJOR_VERSION >= 3
 #define UTF8_BYTES(s) (PyBytes_AS_STRING(s))
+#define NO_BYTES_ERR_STR "expected str, got bytes"
 #else
 #define UTF8_BYTES(s) (PyString_AS_STRING(s))
+#define NO_BYTES_ERR_STR "expected unicode, got str"
 #endif
 
 
@@ -55,7 +57,7 @@ static inline PyObject* normalize(PyObject *mod, PyObject *pystr) {
         return utf8;
     }
 
-    PyErr_SetString(PyExc_TypeError, "expected str or unicode");
+    PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
     return NULL;
 }
 
@@ -139,7 +141,7 @@ static PyObject* jellyfish_damerau_levenshtein_distance(PyObject *self,
 
     if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
         if(PyErr_Occurred()) {
-            PyErr_SetString(PyExc_ValueError, "damerau_levenshtein_distance requires unicode parameters");
+            PyErr_SetString(PyExc_ValueError, NO_BYTES_ERR_STR);
         }
         return NULL;
     }
