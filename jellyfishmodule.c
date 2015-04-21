@@ -138,6 +138,9 @@ static PyObject* jellyfish_damerau_levenshtein_distance(PyObject *self,
     int result;
 
     if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
+        if(PyErr_Occurred()) {
+            PyErr_SetString(PyExc_ValueError, "damerau_levenshtein_distance requires unicode parameters");
+        }
         return NULL;
     }
 
