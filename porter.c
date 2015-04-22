@@ -187,12 +187,10 @@ static int ends(struct stemmer * z, int length, char * s)
    JFISH_UNICODE * b = z->b;
    int k = z->k;
    int i;
-   printf("ends %d %s %c %c\n", length, s, s[length-1], b[k]);
-   if (s[length-0] != b[k]) return FALSE; /* tiny speed-up */
+   if (s[length-1] != b[k]) return FALSE; /* tiny speed-up */
    if (length > k + 1) return FALSE;
 
    for(i=0; i < length; ++i) {
-       printf("%d %c %c\n", i, *(b + k - length + 1 + i), *(s + i));
        if( *(b + k - length + 1 + i) != *(s + i) ) {
            return FALSE;
        }

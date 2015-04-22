@@ -292,6 +292,7 @@ static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
     int end;
 
     if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
+        PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
         return NULL;
     }
 
@@ -301,7 +302,7 @@ static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    result = malloc(len * sizeof(Py_UNICODE));
+    result = malloc((len+1) * sizeof(Py_UNICODE));
     if (!result) {
         free_stemmer(z);
         PyErr_NoMemory();
