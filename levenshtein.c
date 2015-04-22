@@ -3,10 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int levenshtein_distance(const char *s1, const char *s2)
+int levenshtein_distance(const JFISH_UNICODE *s1, int s1_len, const JFISH_UNICODE *s2, int s2_len)
 {
-    size_t s1_len = strlen(s1);
-    size_t s2_len = strlen(s2);
     size_t rows = s1_len + 1;
     size_t cols = s2_len + 1;
     size_t i, j;
