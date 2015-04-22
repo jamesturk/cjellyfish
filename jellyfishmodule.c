@@ -33,18 +33,6 @@ static inline PyObject* normalize(PyObject *mod, PyObject *pystr) {
     PyObject *normalized;
     PyObject *utf8;
 
-#if PY_MAJOR_VERSION < 3
-    if (PyString_Check(pystr)) {
-        Py_INCREF(pystr);
-        return pystr;
-    }
-#else
-    if (PyBytes_Check(pystr)) {
-        Py_INCREF(pystr);
-        return pystr;
-    }
-#endif
-
     if (PyUnicode_Check(pystr)) {
         unicodedata_normalize = GETSTATE(mod)->unicodedata_normalize;
         normalized = PyObject_CallFunction(unicodedata_normalize,
