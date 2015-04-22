@@ -284,13 +284,14 @@ static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
 
 static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
 {
-    const char *str;
-    char *result;
+    const Py_UNICODE *str;
+    int len;
+    Py_UNICODE *result;
     PyObject *ret;
     struct stemmer *z;
     int end;
 
-    if (!PyArg_ParseTuple(args, "s", &str)) {
+    if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
         return NULL;
     }
 
@@ -300,17 +301,18 @@ static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    result = strdup(str);
+    result = malloc(len * sizeof(Py_UNICODE));
     if (!result) {
         free_stemmer(z);
         PyErr_NoMemory();
         return NULL;
     }
+    memcpy(result, str, len * sizeof(Py_UNICODE));
 
-    end = stem(z, result, strlen(result) - 1);
+    end = stem(z, result, len - 1);
     result[end + 1] = '\0';
 
-    ret = Py_BuildValue("s", result);
+    ret = Py_BuildValue("u", result);
 
     free(result);
     free_stemmer(z);

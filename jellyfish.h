@@ -36,6 +36,6 @@ int match_rating_comparison(const JFISH_UNICODE *str1, size_t len1, const JFISH_
 struct stemmer;
 extern struct stemmer * create_stemmer(void);
 extern void free_stemmer(struct stemmer * z);
-extern int stem(struct stemmer * z, char * b, int k);
+extern int stem(struct stemmer * z, JFISH_UNICODE * b, int k);
 
 #endif
