@@ -87,14 +87,15 @@ static PyObject * jellyfish_jaro_distance(PyObject *self, PyObject *args)
 
 static PyObject * jellyfish_hamming_distance(PyObject *self, PyObject *args)
 {
-    const char *s1, *s2;
+    const JFISH_UNICODE *s1, *s2;
+    int len1, len2;
     unsigned result;
 
-    if (!PyArg_ParseTuple(args, "ss", &s1, &s2)) {
+    if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
         return NULL;
     }
 
-    result = hamming_distance(s1, s2);
+    result = hamming_distance(s1, len1, s2, len2);
 
     return Py_BuildValue("I", result);
 }
