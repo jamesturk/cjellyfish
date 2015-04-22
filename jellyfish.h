@@ -20,8 +20,8 @@ size_t hamming_distance(const char *str1, const char *str2);
 
 int levenshtein_distance(const char *str1, const char *str2);
 
-int damerau_levenshtein_distance(
-        JFISH_UNICODE *str1, JFISH_UNICODE *str2, size_t len1, size_t len2);
+int damerau_levenshtein_distance(const JFISH_UNICODE *str1, const JFISH_UNICODE *str2,
+        size_t len1, size_t len2);
 
 char* soundex(const char *str);
 

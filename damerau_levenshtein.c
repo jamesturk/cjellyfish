@@ -4,7 +4,7 @@
 #include <wchar.h>
 
 
-int damerau_levenshtein_distance(JFISH_UNICODE *s1, JFISH_UNICODE *s2, size_t len1, size_t len2)
+int damerau_levenshtein_distance(const JFISH_UNICODE *s1, const JFISH_UNICODE *s2, size_t len1, size_t len2)
 {
     size_t infinite = len1 + len2;
     size_t cols = len2 + 2;
