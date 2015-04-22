@@ -60,7 +60,7 @@ static PyObject * jellyfish_jaro_winkler(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    result = jaro_winkler(s1, len1, s2, len2, false);
+    result = jaro_winkler(s1, len1, s2, len2, 0);
     if (isnan(result)) {
         PyErr_NoMemory();
         return NULL;

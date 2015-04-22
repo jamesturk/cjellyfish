@@ -1,7 +1,6 @@
 #ifndef _JELLYFISH_H_
 #define _JELLYFISH_H_
 
-#include <stdbool.h>
 #include <stdlib.h>
 
 #if CJELLYFISH_PYTHON
@@ -13,7 +12,7 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
 
-double jaro_winkler(const JFISH_UNICODE *str1, int len1, const JFISH_UNICODE *str2, int len2, bool long_tolerance);
+double jaro_winkler(const JFISH_UNICODE *str1, int len1, const JFISH_UNICODE *str2, int len2, int long_tolerance);
 double jaro_distance(const JFISH_UNICODE *str1, int len1, const JFISH_UNICODE *str2, int len2);
 
 size_t hamming_distance(const JFISH_UNICODE *str1, int len1,

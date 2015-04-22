@@ -16,7 +16,7 @@
  */
 double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
                      const JFISH_UNICODE *yang, int yang_length,
-                     bool long_tolerance, bool winklerize)
+                     int long_tolerance, int winklerize)
 {
     /* Arguments:
 
@@ -131,12 +131,12 @@ double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
 
 double jaro_winkler(const JFISH_UNICODE *ying, int ying_len,
         const JFISH_UNICODE *yang, int yang_len,
-        bool long_tolerance)
+        int long_tolerance)
 {
-    return _jaro_winkler(ying, ying_len, yang, yang_len, long_tolerance, true);
+    return _jaro_winkler(ying, ying_len, yang, yang_len, long_tolerance, 1);
 }
 
 double jaro_distance(const JFISH_UNICODE *ying, int ying_len, const JFISH_UNICODE *yang, int yang_len)
 {
-    return _jaro_winkler(ying, ying_len, yang, yang_len, false, false);
+    return _jaro_winkler(ying, ying_len, yang, yang_len, 0, 0);
 }
