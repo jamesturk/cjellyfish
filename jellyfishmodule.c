@@ -258,22 +258,23 @@ static PyObject* jellyfish_match_rating_comparison(PyObject *self,
 
 static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
 {
-    const char *str;
-    char *result;
+    const Py_UNICODE *str;
+    Py_UNICODE *result;
+    int len;
     PyObject *ret;
 
-    if (!PyArg_ParseTuple(args, "s", &str)) {
+    if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
         return NULL;
     }
 
-    result = nysiis(str);
+    result = nysiis(str, len);
     if (!result) {
         PyErr_NoMemory();
         return NULL;
     }
 
-    ret = Py_BuildValue("s", result);
-    free(result);
+    ret = Py_BuildValue("u", result);
+    //free(result);
 
     return ret;
 }

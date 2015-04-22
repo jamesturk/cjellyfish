@@ -5,24 +5,22 @@
 
 #define ISVOWEL(a) ((a) == 'A' || (a) == 'E' || (a) == 'I' || (a) == 'O' || (a) == 'U')
 
-char *nysiis(const char *str) {
-    size_t len = strlen(str);
+JFISH_UNICODE *nysiis(const JFISH_UNICODE *str, int len) {
+    JFISH_UNICODE c1, c2, c3;
+    JFISH_UNICODE *copy = alloca((len + 1) * sizeof(JFISH_UNICODE));
+    JFISH_UNICODE *code = NULL;
+    JFISH_UNICODE *p, *cp;
 
-    char c1, c2, c3;
-    char *copy = alloca((len + 1) * sizeof(char));
-    char *code = NULL;
-    char *p, *cp;
-
-    memcpy(copy, str, len+1);
+    memcpy(copy, str, (len+1) * sizeof(JFISH_UNICODE));
     if (!copy) {
         return NULL;
     }
 
     if (!*copy) {
-        return calloc(1, sizeof(char));
+        return calloc(1, sizeof(JFISH_UNICODE));
     }
 
-    code = calloc(len + 1, sizeof(char));
+    code = calloc(len + 1, sizeof(JFISH_UNICODE));
     if (!code) {
         return NULL;
     }
@@ -34,16 +32,16 @@ char *nysiis(const char *str) {
     }
 
     // Step 1
-    if (strncmp(copy, "MAC", 3) == 0) {
+    if (len >= 3 && copy[0] == 'M' && copy[1] == 'A' && copy[2] == 'C') {
         copy[1] = 'C';
-    } else if (strncmp(copy, "KN", 2) == 0) {
+    } else if (len >= 2 && copy[0] == 'K' && copy[1] == 'N') {
         copy[0] = 'N';
-    } else if (copy[0] == 'K') {
+    } else if (len >= 1 && copy[0] == 'K') {
         copy[0] = 'C';
-    } else if (strncmp(copy, "PH", 2) == 0) {
+    } else if (len >= 2 && copy[0] == 'P' && copy[1] == 'H') {
         copy[0] = 'F';
         copy[1] = 'F';
-    } else if (strncmp(copy, "SCH", 3) == 0) {
+    } else if (len >= 3 && copy[0] == 'S' && copy[1] == 'C' && copy[2] == 'H') {
         copy[1] = 'S';
         copy[2] = 'S';
     }

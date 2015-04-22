@@ -27,7 +27,7 @@ char* soundex(const char *str);
 
 char* metaphone(const char *str);
 
-char *nysiis(const char *str);
+JFISH_UNICODE *nysiis(const JFISH_UNICODE *str, int len);
 
 JFISH_UNICODE* match_rating_codex(const JFISH_UNICODE *str, size_t len);
 int match_rating_comparison(const JFISH_UNICODE *str1, size_t len1, const JFISH_UNICODE *str2, size_t len2);
