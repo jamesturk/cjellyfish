@@ -277,7 +277,7 @@ static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
     }
 
     ret = Py_BuildValue("u", result);
-    //free(result);
+    free(result);
 
     return ret;
 }
