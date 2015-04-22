@@ -13,6 +13,13 @@ struct jellyfish_state {
 static struct jellyfish_state _state;
 #endif
 
+#ifdef _MSC_VER
+#define INLINE __inline
+#define isnan(x) _isnan(x)
+#else
+#define INLINE inline
+#endif
+
 #if PY_MAJOR_VERSION >= 3
 #define UTF8_BYTES(s) (PyBytes_AS_STRING(s))
 #define NO_BYTES_ERR_STR "expected str, got bytes"
@@ -28,7 +35,7 @@ static struct jellyfish_state _state;
  * If passed a PyUnicode, the returned object will be NFKD UTF-8.
  * If passed a PyString or PyBytes no conversion is done.
  */
-static inline PyObject* normalize(PyObject *mod, PyObject *pystr) {
+static INLINE PyObject* normalize(PyObject *mod, PyObject *pystr) {
     PyObject *unicodedata_normalize;
     PyObject *normalized;
     PyObject *utf8;
