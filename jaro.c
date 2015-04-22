@@ -14,7 +14,8 @@
 /* borrowed heavily from strcmp95.c
  *    http://www.census.gov/geo/msb/stand/strcmp.c
  */
-double _jaro_winkler(const char *ying, const char *yang,
+double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
+                     const JFISH_UNICODE *yang, int yang_length,
                      bool long_tolerance, bool winklerize)
 {
     /* Arguments:
@@ -30,11 +31,11 @@ double _jaro_winkler(const char *ying, const char *yang,
          test when comparing fixed length fields such as phone and
          social security numbers.
     */
-    char *ying_flag=0, *yang_flag=0;
+    JFISH_UNICODE *ying_flag=0, *yang_flag=0;
 
     double weight;
 
-    long ying_length, yang_length, min_len;
+    long min_len;
     long search_range;
     long lowlim, hilim;
     long trans_count, common_chars;
@@ -42,21 +43,19 @@ double _jaro_winkler(const char *ying, const char *yang,
     int i, j, k;
 
     // ensure that neither string is blank
-    ying_length = strlen(ying);
-    yang_length = strlen(yang);
     if (!ying_length || !yang_length) return 0;
 
     search_range = min_len = (ying_length > yang_length) ? ying_length : yang_length;
 
     // Blank out the flags
-    ying_flag = alloca(ying_length + 1);
+    ying_flag = alloca((ying_length + 1) * sizeof(JFISH_UNICODE));
     if (!ying_flag) return NaN;
 
-    yang_flag = alloca(yang_length + 1);
+    yang_flag = alloca((yang_length + 1) * sizeof(JFISH_UNICODE));
     if (!yang_flag) return NaN;
 
-    memset(ying_flag, 0, ying_length + 1);
-    memset(yang_flag, 0, yang_length + 1);
+    memset(ying_flag, 0, (ying_length + 1) * sizeof(JFISH_UNICODE));
+    memset(yang_flag, 0, (yang_length + 1) * sizeof(JFISH_UNICODE));
 
     search_range = (search_range/2) - 1;
     if (search_range < 0) search_range = 0;
@@ -130,12 +129,14 @@ double _jaro_winkler(const char *ying, const char *yang,
 }
 
 
-double jaro_winkler(const char *ying, const char *yang, bool long_tolerance)
+double jaro_winkler(const JFISH_UNICODE *ying, int ying_len,
+        const JFISH_UNICODE *yang, int yang_len,
+        bool long_tolerance)
 {
-    return _jaro_winkler(ying, yang, long_tolerance, true);
+    return _jaro_winkler(ying, ying_len, yang, yang_len, long_tolerance, true);
 }
 
-double jaro_distance(const char *ying, const char *yang)
+double jaro_distance(const JFISH_UNICODE *ying, int ying_len, const JFISH_UNICODE *yang, int yang_len)
 {
-    return _jaro_winkler(ying, yang, false, false);
+    return _jaro_winkler(ying, ying_len, yang, yang_len, false, false);
 }

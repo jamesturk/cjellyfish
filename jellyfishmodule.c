@@ -51,14 +51,15 @@ static inline PyObject* normalize(PyObject *mod, PyObject *pystr) {
 
 static PyObject * jellyfish_jaro_winkler(PyObject *self, PyObject *args)
 {
-    const char *s1, *s2;
+    const Py_UNICODE *s1, *s2;
+    int len1, len2;
     double result;
 
-    if (!PyArg_ParseTuple(args, "ss", &s1, &s2)) {
+    if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
         return NULL;
     }
 
-    result = jaro_winkler(s1, s2, false);
+    result = jaro_winkler(s1, len1, s2, len2, false);
     if (isnan(result)) {
         PyErr_NoMemory();
         return NULL;
@@ -69,14 +70,15 @@ static PyObject * jellyfish_jaro_winkler(PyObject *self, PyObject *args)
 
 static PyObject * jellyfish_jaro_distance(PyObject *self, PyObject *args)
 {
-    const char *s1, *s2;
+    const Py_UNICODE *s1, *s2;
+    int len1, len2;
     double result;
 
-    if (!PyArg_ParseTuple(args, "ss", &s1, &s2)) {
+    if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
         return NULL;
     }
 
-    result = jaro_distance(s1, s2);
+    result = jaro_distance(s1, len1, s2, len2);
     if (isnan(result)) {
         PyErr_NoMemory();
         return NULL;
@@ -87,7 +89,7 @@ static PyObject * jellyfish_jaro_distance(PyObject *self, PyObject *args)
 
 static PyObject * jellyfish_hamming_distance(PyObject *self, PyObject *args)
 {
-    const JFISH_UNICODE *s1, *s2;
+    const Py_UNICODE *s1, *s2;
     int len1, len2;
     unsigned result;
 
