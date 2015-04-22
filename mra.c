@@ -2,17 +2,17 @@
 #include <string.h>
 #include <ctype.h>
 
-static size_t compute_match_rating_codex(const char *str, char codex[7]);
+static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, JFISH_UNICODE codex[7]);
 
-int match_rating_comparison(const char *s1, const char *s2) {
+int match_rating_comparison(const JFISH_UNICODE *s1, size_t len1, const JFISH_UNICODE *s2, size_t len2) {
     size_t s1c_len, s2c_len;
     size_t i, j;
     int diff;
-    char *longer;
+    JFISH_UNICODE *longer;
 
-    char s1_codex[7], s2_codex[7];
-    s1c_len = compute_match_rating_codex(s1, s1_codex);
-    s2c_len = compute_match_rating_codex(s2, s2_codex);
+    JFISH_UNICODE s1_codex[7], s2_codex[7];
+    s1c_len = compute_match_rating_codex(s1, len1, s1_codex);
+    s2c_len = compute_match_rating_codex(s2, len2, s2_codex);
 
     if (abs(s1c_len - s2c_len) >= 3) {
         return -1;
@@ -74,20 +74,19 @@ int match_rating_comparison(const char *s1, const char *s2) {
     }
 }
 
-char* match_rating_codex(const char *str) {
-    char *codex = malloc(7 * sizeof(char));
+JFISH_UNICODE* match_rating_codex(const JFISH_UNICODE *str, size_t len) {
+    JFISH_UNICODE *codex = malloc(7 * sizeof(JFISH_UNICODE));
     if (!codex) {
         return NULL;
     }
-    compute_match_rating_codex(str, codex);
+    compute_match_rating_codex(str, len, codex);
 
     return codex;
 }
 
-static size_t compute_match_rating_codex(const char *str, char codex[7]) {
-    size_t len = strlen(str);
+static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, JFISH_UNICODE codex[7]) {
     size_t i, j;
-    char c, prev;
+    JFISH_UNICODE c, prev;
 
     prev = '\0';
     for(i = 0, j = 0; i < len && j < 7; i++) {

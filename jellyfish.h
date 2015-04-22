@@ -29,8 +29,8 @@ char* metaphone(const char *str);
 
 char *nysiis(const char *str);
 
-char* match_rating_codex(const char *str);
-int match_rating_comparison(const char *str1, const char *str2);
+JFISH_UNICODE* match_rating_codex(const JFISH_UNICODE *str, size_t len);
+int match_rating_comparison(const JFISH_UNICODE *str1, size_t len1, const JFISH_UNICODE *str2, size_t len2);
 
 struct stemmer;
 extern struct stemmer * create_stemmer(void);

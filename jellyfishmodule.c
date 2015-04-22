@@ -141,7 +141,7 @@ static PyObject* jellyfish_damerau_levenshtein_distance(PyObject *self,
 
     if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
         if(PyErr_Occurred()) {
-            PyErr_SetString(PyExc_ValueError, NO_BYTES_ERR_STR);
+            PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
         }
         return NULL;
     }
@@ -219,21 +219,25 @@ static PyObject* jellyfish_metaphone(PyObject *self, PyObject *args)
 
 static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
 {
-    const char *str;
-    char *result;
+    const Py_UNICODE *str;
+    int len;
+    Py_UNICODE *result;
     PyObject *ret;
 
-    if (!PyArg_ParseTuple(args, "s", &str)) {
+    if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
+        if(PyErr_Occurred()) {
+            PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
+        }
         return NULL;
     }
 
-    result = match_rating_codex(str);
+    result = match_rating_codex(str, len);
     if (!result) {
         PyErr_NoMemory();
         return NULL;
     }
 
-    ret = Py_BuildValue("s", result);
+    ret = Py_BuildValue("u", result);
     free(result);
 
     return ret;
@@ -242,14 +246,18 @@ static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
 static PyObject* jellyfish_match_rating_comparison(PyObject *self,
                                                    PyObject *args)
 {
-    const char *str1, *str2;
+    const Py_UNICODE *str1, *str2;
+    int len1, len2;
     int result;
 
-    if (!PyArg_ParseTuple(args, "ss", &str1, &str2)) {
+    if (!PyArg_ParseTuple(args, "u#u#", &str1, &len1, &str2, &len2)) {
+        if(PyErr_Occurred()) {
+            PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
+        }
         return NULL;
     }
 
-    result = match_rating_comparison(str1, str2);
+    result = match_rating_comparison(str1, len1, str2, len2);
 
     if (result == -1) {
         Py_RETURN_NONE;
