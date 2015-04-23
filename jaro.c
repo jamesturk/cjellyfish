@@ -2,19 +2,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include "jellyfish.h"
 
 #define NOTNUM(c)   ((c>57) || (c<48))
-
-#ifndef NAN
-#ifdef _MSC_VER
-static const unsigned long __nan[2] = {0xffffffff, 0x7fffffff};
-#define NAN (*(const float *) __nan)
-#else
-#define NAN (INFINITY-INFINITY)
-#endif
-#endif
 
 /* borrowed heavily from strcmp95.c
  *    http://www.census.gov/geo/msb/stand/strcmp.c
@@ -55,13 +45,13 @@ double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
     // Blank out the flags
     ying_flag = calloc((ying_length + 1), sizeof(JFISH_UNICODE));
     if (!ying_flag) {
-        return NAN;
+        return -100;
     }
 
     yang_flag = calloc((yang_length + 1), sizeof(JFISH_UNICODE));
     if (!yang_flag) {
         free(ying_flag);
-        return NAN;
+        return -100;
     }
 
     search_range = (search_range/2) - 1;

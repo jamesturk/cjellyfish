@@ -15,7 +15,6 @@ static struct jellyfish_state _state;
 
 #ifdef _MSC_VER
 #define INLINE __inline
-#define isnan(x) _isnan(x)
 #else
 #define INLINE inline
 #endif
@@ -68,7 +67,11 @@ static PyObject * jellyfish_jaro_winkler(PyObject *self, PyObject *args)
     }
 
     result = jaro_winkler(s1, len1, s2, len2, 0);
-    if (isnan(result)) {
+    // jaro returns a big negative number on error, don't use
+    // 0 here in case there's floating point inaccuracy
+    // .. used to use NaN but different compilers (*cough*MSVC*cough)
+    // handle it really poorly
+    if (result < -1) {
         PyErr_NoMemory();
         return NULL;
     }
@@ -88,7 +91,8 @@ static PyObject * jellyfish_jaro_distance(PyObject *self, PyObject *args)
     }
 
     result = jaro_distance(s1, len1, s2, len2);
-    if (isnan(result)) {
+    // see earlier note about jaro_distance return value
+    if (result < -1) {
         PyErr_NoMemory();
         return NULL;
     }
