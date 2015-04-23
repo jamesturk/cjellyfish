@@ -8,7 +8,12 @@
 #define NOTNUM(c)   ((c>57) || (c<48))
 
 #ifndef NAN
+#ifdef _MSC_VER
+static const unsigned long __nan[2] = {0xffffffff, 0x7fffffff};
+#define NAN (*(const float *) __nan)
+#else
 #define NAN (INFINITY-INFINITY)
+#endif
 #endif
 
 /* borrowed heavily from strcmp95.c
