@@ -14,12 +14,14 @@ int damerau_levenshtein_distance(const JFISH_UNICODE *s1, const JFISH_UNICODE *s
     size_t d1, d2, d3, d4, result;
     unsigned short cost;
 
+    size_t *dist = NULL;
+
     size_t *da = calloc(256, sizeof(size_t));
     if (!da) {
         return -1;
     }
 
-    size_t *dist = malloc((len1 + 2) * cols * sizeof(size_t));
+    dist = malloc((len1 + 2) * cols * sizeof(size_t));
     if (!dist) {
         free(da);
         return -1;
