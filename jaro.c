@@ -2,13 +2,13 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "jellyfish.h"
 
 #define NOTNUM(c)   ((c>57) || (c<48))
-#define INRANGE(c)  ((c>0)  && (c<91))
 
-#ifndef NaN
-#define NaN (0.0 / 0.0)
+#ifndef NAN
+#define NAN (INFINITY-INFINITY)
 #endif
 
 /* borrowed heavily from strcmp95.c
@@ -50,13 +50,13 @@ double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
     // Blank out the flags
     ying_flag = calloc((ying_length + 1), sizeof(JFISH_UNICODE));
     if (!ying_flag) {
-        return NaN;
+        return NAN;
     }
 
     yang_flag = calloc((yang_length + 1), sizeof(JFISH_UNICODE));
     if (!yang_flag) {
         free(ying_flag);
-        return NaN;
+        return NAN;
     }
 
     search_range = (search_range/2) - 1;
