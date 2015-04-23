@@ -48,14 +48,16 @@ double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
     search_range = min_len = (ying_length > yang_length) ? ying_length : yang_length;
 
     // Blank out the flags
-    ying_flag = alloca((ying_length + 1) * sizeof(JFISH_UNICODE));
-    if (!ying_flag) return NaN;
+    ying_flag = calloc((ying_length + 1), sizeof(JFISH_UNICODE));
+    if (!ying_flag) {
+        return NaN;
+    }
 
-    yang_flag = alloca((yang_length + 1) * sizeof(JFISH_UNICODE));
-    if (!yang_flag) return NaN;
-
-    memset(ying_flag, 0, (ying_length + 1) * sizeof(JFISH_UNICODE));
-    memset(yang_flag, 0, (yang_length + 1) * sizeof(JFISH_UNICODE));
+    yang_flag = calloc((yang_length + 1), sizeof(JFISH_UNICODE));
+    if (!yang_flag) {
+        free(ying_flag);
+        return NaN;
+    }
 
     search_range = (search_range/2) - 1;
     if (search_range < 0) search_range = 0;
@@ -77,7 +79,11 @@ double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
     }
 
     // If no characters in common - return
-    if (!common_chars) return 0;
+    if (!common_chars) {
+        free(ying_flag);
+        free(yang_flag);
+        return 0;
+    }
 
     // Count the number of transpositions
     k = trans_count = 0;
@@ -125,6 +131,8 @@ double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
         }
     }
 
+    free(ying_flag);
+    free(yang_flag);
     return weight;
 }
 

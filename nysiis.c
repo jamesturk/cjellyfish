@@ -7,21 +7,24 @@
 
 JFISH_UNICODE *nysiis(const JFISH_UNICODE *str, int len) {
     JFISH_UNICODE c1, c2, c3;
-    JFISH_UNICODE *copy = alloca((len + 1) * sizeof(JFISH_UNICODE));
+    JFISH_UNICODE *copy = NULL;
     JFISH_UNICODE *code = NULL;
     JFISH_UNICODE *p, *cp;
 
-    memcpy(copy, str, (len+1) * sizeof(JFISH_UNICODE));
+    copy = malloc((len + 1) * sizeof(JFISH_UNICODE));
     if (!copy) {
         return NULL;
     }
+    memcpy(copy, str, (len+1) * sizeof(JFISH_UNICODE));
 
     if (!*copy) {
+        free(copy);
         return calloc(1, sizeof(JFISH_UNICODE));
     }
 
     code = calloc(len + 1, sizeof(JFISH_UNICODE));
     if (!code) {
+        free(copy);
         return NULL;
     }
 
@@ -182,5 +185,6 @@ JFISH_UNICODE *nysiis(const JFISH_UNICODE *str, int len) {
         *(cp - 1) = '\0';
     }
 
+    free(copy);
     return code;
 }
