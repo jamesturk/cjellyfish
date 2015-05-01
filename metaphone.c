@@ -186,7 +186,7 @@ char* metaphone(const char *str)
             *r++ = 'S';
             break;
         case ' ':
-            if (*r != ' ') {
+            if (r != result && *r != ' ') {
                 *r++ = ' ';
             }
             break;
