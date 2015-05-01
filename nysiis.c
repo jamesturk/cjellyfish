@@ -168,8 +168,9 @@ JFISH_UNICODE *nysiis(const JFISH_UNICODE *str, int len) {
     *cp = '\0';
 
     // Step 7
+    // (cp-1 != code) checks are to make sure we don't remove the last char from code
     c1 = *(cp - 1);
-    if (c1 == 'S') {
+    if (c1 == 'S' && (cp-1) != code) {
         *(--cp) = '\0';
     } else if (c1 == 'Y') {
         if (*(cp - 2) == 'A') {
@@ -181,7 +182,7 @@ JFISH_UNICODE *nysiis(const JFISH_UNICODE *str, int len) {
     // There is no step 8!
 
     // Step 9
-    if (*(cp - 1) == 'A') {
+    if (*(cp - 1) == 'A' && (cp-1) != code) {
         *(cp - 1) = '\0';
     }
 
