@@ -55,18 +55,20 @@ static INLINE PyObject* normalize(PyObject *mod, PyObject *pystr) {
     return NULL;
 }
 
-static PyObject * jellyfish_jaro_winkler(PyObject *self, PyObject *args)
+static PyObject * jellyfish_jaro_winkler(PyObject *self, PyObject *args, PyObject *kw)
 {
     const Py_UNICODE *s1, *s2;
     int len1, len2;
     double result;
+    int long_tolerance = 0;
+    static char *keywords[] = {"s1", "s2", "long_tolerance", NULL};
 
-    if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kw, "u#u#|i", keywords, &s1, &len1, &s2, &len2, &long_tolerance)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
         return NULL;
     }
 
-    result = jaro_winkler(s1, len1, s2, len2, 0);
+    result = jaro_winkler(s1, len1, s2, len2, long_tolerance);
     // jaro returns a big negative number on error, don't use
     // 0 here in case there's floating point inaccuracy
     // .. used to use NaN but different compilers (*cough*MSVC*cough)
@@ -333,8 +335,8 @@ static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
 }
 
 static PyMethodDef jellyfish_methods[] = {
-    {"jaro_winkler", jellyfish_jaro_winkler, METH_VARARGS,
-     "jaro_winkler(string1, string2)\n\n"
+    {"jaro_winkler", (PyCFunction)jellyfish_jaro_winkler, METH_VARARGS|METH_KEYWORDS,
+     "jaro_winkler(string1, string2, long_tolerance)\n\n"
      "Do a Jaro-Winkler string comparison between string1 and string2."},
 
     {"jaro_distance", jellyfish_jaro_distance, METH_VARARGS,
