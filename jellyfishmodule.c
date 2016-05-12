@@ -27,6 +27,8 @@ static struct jellyfish_state _state;
 #define NO_BYTES_ERR_STR "expected unicode, got str"
 #endif
 
+#define UNSUPPORTED_CODEPOINT "Encountered unsupported code point in string."
+
 
 /* Returns a new reference to a PyString (python < 3) or
  * PyBytes (python >= 3.0).
@@ -156,6 +158,10 @@ static PyObject* jellyfish_damerau_levenshtein_distance(PyObject *self,
     result = damerau_levenshtein_distance(s1, s2, len1, len2);
     if (result == -1) {
         PyErr_NoMemory();
+        return NULL;
+    }
+    else if (result == -2) {
+        PyErr_SetString(PyExc_TypeError, UNSUPPORTED_CODEPOINT);
         return NULL;
     }
 

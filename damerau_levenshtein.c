@@ -12,11 +12,13 @@ int damerau_levenshtein_distance(const JFISH_UNICODE *s1, const JFISH_UNICODE *s
     size_t i, j, i1, j1;
     size_t db;
     size_t d1, d2, d3, d4, result;
+    size_t da_idx;
     unsigned short cost;
 
     size_t *dist = NULL;
 
-    size_t *da = calloc(256, sizeof(size_t));
+    size_t len_da = 256;
+    size_t *da = calloc(len_da, sizeof(size_t));
     if (!da) {
         return -1;
     }
@@ -42,7 +44,13 @@ int damerau_levenshtein_distance(const JFISH_UNICODE *s1, const JFISH_UNICODE *s
     for (i = 1; i <= len1; i++) {
         db = 0;
         for (j = 1; j <= len2; j++) {
-            i1 = da[(JFISH_UNICODE)s2[j-1]];
+            da_idx = (JFISH_UNICODE)s2[j-1];
+            if (da_idx >= len_da) {
+                free(dist);
+                free(da);
+                return -2;
+            }
+            i1 = da[da_idx];
             j1 = db;
 
             if (s1[i - 1] == s2[j - 1]) {
