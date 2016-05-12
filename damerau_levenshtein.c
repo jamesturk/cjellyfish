@@ -68,7 +68,13 @@ int damerau_levenshtein_distance(const JFISH_UNICODE *s1, const JFISH_UNICODE *s
             dist[((i+1)*cols) + j + 1] = MIN(MIN(d1, d2), MIN(d3, d4));
         }
 
-        da[(JFISH_UNICODE)s1[i-1]] = i;
+        da_idx = (JFISH_UNICODE)s1[i-1];
+        if (da_idx >= len_da) {
+            free(dist);
+            free(da);
+            return -2;
+        }
+        da[da_idx] = i;
     }
 
     result = dist[((len1+1) * cols) + len2 + 1];
