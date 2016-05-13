@@ -17,7 +17,7 @@ int damerau_levenshtein_distance(const JFISH_UNICODE *s1, const JFISH_UNICODE *s
 
     size_t *dist = NULL;
 
-    size_t len_da = 256;
+    const size_t len_da = 256;
     size_t *da = calloc(len_da, sizeof(size_t));
     if (!da) {
         return -1;

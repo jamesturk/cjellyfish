@@ -161,7 +161,7 @@ static PyObject* jellyfish_damerau_levenshtein_distance(PyObject *self,
         return NULL;
     }
     else if (result == -2) {
-        PyErr_SetString(PyExc_TypeError, UNSUPPORTED_CODEPOINT);
+        PyErr_SetString(PyExc_ValueError, UNSUPPORTED_CODEPOINT);
         return NULL;
     }
 
