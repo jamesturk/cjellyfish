@@ -36,25 +36,20 @@ static struct jellyfish_state _state;
  * If passed a PyUnicode, the returned object will be NFKD UTF-8.
  * If passed a PyString or PyBytes no conversion is done.
  */
-static INLINE PyObject* normalize(PyObject *mod, PyObject *pystr) {
+static INLINE PyObject* normalize(PyObject *mod, const Py_UNICODE *pystr) {
     PyObject *unicodedata_normalize;
     PyObject *normalized;
     PyObject *utf8;
 
-    if (PyUnicode_Check(pystr)) {
-        unicodedata_normalize = GETSTATE(mod)->unicodedata_normalize;
-        normalized = PyObject_CallFunction(unicodedata_normalize,
-                                           "sO", "NFKD", pystr);
-        if (!normalized) {
-            return NULL;
-        }
-        utf8 = PyUnicode_AsUTF8String(normalized);
-        Py_DECREF(normalized);
-        return utf8;
+    unicodedata_normalize = GETSTATE(mod)->unicodedata_normalize;
+    normalized = PyObject_CallFunction(unicodedata_normalize,
+                                       "su", "NFKD", pystr);
+    if (!normalized) {
+        return NULL;
     }
-
-    PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
-    return NULL;
+    utf8 = PyUnicode_AsUTF8String(normalized);
+    Py_DECREF(normalized);
+    return utf8;
 }
 
 static PyObject * jellyfish_jaro_winkler(PyObject *self, PyObject *args, PyObject *kw)
@@ -170,16 +165,18 @@ static PyObject* jellyfish_damerau_levenshtein_distance(PyObject *self,
 
 static PyObject* jellyfish_soundex(PyObject *self, PyObject *args)
 {
-    PyObject *pystr;
+    const Py_UNICODE *str;
+    int len;
     PyObject *normalized;
     PyObject* ret;
     char *result;
 
-    if (!PyArg_ParseTuple(args, "O", &pystr)) {
+    if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
+        PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
         return NULL;
     }
 
-    normalized = normalize(self, pystr);
+    normalized = normalize(self, str);
     if (!normalized) {
         return NULL;
     }
@@ -201,16 +198,18 @@ static PyObject* jellyfish_soundex(PyObject *self, PyObject *args)
 
 static PyObject* jellyfish_metaphone(PyObject *self, PyObject *args)
 {
-    PyObject *pystr;
+    const Py_UNICODE *str;
+    int len;
     PyObject *normalized;
     PyObject *ret;
     char *result;
 
-    if (!PyArg_ParseTuple(args, "O", &pystr)) {
+    if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
+        PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
         return NULL;
     }
 
-    normalized = normalize(self, pystr);
+    normalized = normalize(self, str);
     if (!normalized) {
         return NULL;
     }
