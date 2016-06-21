@@ -161,7 +161,7 @@ char* metaphone(const char *str)
             if (s == str && next == 'h') {
                 next = tolower(*(++s + 1));
             }
-            if (ISVOWEL(next)) {
+            if (ISVOWEL(next) || next == 0) {
                 *r++ = 'W';
             }
             break;
