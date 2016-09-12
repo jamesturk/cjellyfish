@@ -21,10 +21,10 @@ static struct jellyfish_state _state;
 
 #if PY_MAJOR_VERSION >= 3
 #define UTF8_BYTES(s) (PyBytes_AS_STRING(s))
-#define NO_BYTES_ERR_STR "expected str, got bytes"
+#define NO_BYTES_ERR_STR "str argument expected"
 #else
 #define UTF8_BYTES(s) (PyString_AS_STRING(s))
-#define NO_BYTES_ERR_STR "expected unicode, got str"
+#define NO_BYTES_ERR_STR "unicode argument expected"
 #endif
 
 #define UNSUPPORTED_CODEPOINT "Encountered unsupported code point in string."
