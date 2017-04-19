@@ -28,6 +28,10 @@ int match_rating_comparison(const JFISH_UNICODE *s1, size_t len1, const JFISH_UN
     i = s1c_len - 1;
     j = s2c_len - 1;
 
+    if (s1c_len == 0 && s2c_len == 0) {
+        return -1;
+    }
+
     while (i != 0 && j != 0) {
         if (s1_codex[i] == ' ') {
             i--;
