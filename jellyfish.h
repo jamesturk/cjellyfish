@@ -23,7 +23,7 @@ int levenshtein_distance(const JFISH_UNICODE *str1, int len1, const JFISH_UNICOD
 int damerau_levenshtein_distance(const JFISH_UNICODE *str1, const JFISH_UNICODE *str2,
         size_t len1, size_t len2);
 
-char* soundex(const char *str);
+char* soundex(const char *str, size_t len);
 
 char* metaphone(const char *str);
 
