@@ -181,7 +181,7 @@ static PyObject* jellyfish_soundex(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    result = soundex(UTF8_BYTES(normalized));
+    result = soundex(UTF8_BYTES(normalized), len);
     Py_DECREF(normalized);
 
     if (!result) {
