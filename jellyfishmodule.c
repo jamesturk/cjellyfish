@@ -6,25 +6,14 @@ struct jellyfish_state {
     PyObject *unicodedata_normalize;
 };
 
-#if PY_MAJOR_VERSION >= 3
 #define GETSTATE(m) ((struct jellyfish_state*)PyModule_GetState(m))
-#else
-#define GETSTATE(m) (&_state)
-static struct jellyfish_state _state;
-#endif
+#define UTF8_BYTES(s) (PyBytes_AS_STRING(s))
+#define NO_BYTES_ERR_STR "str argument expected"
 
 #ifdef _MSC_VER
 #define INLINE __inline
 #else
 #define INLINE inline
-#endif
-
-#if PY_MAJOR_VERSION >= 3
-#define UTF8_BYTES(s) (PyBytes_AS_STRING(s))
-#define NO_BYTES_ERR_STR "str argument expected"
-#else
-#define UTF8_BYTES(s) (PyString_AS_STRING(s))
-#define NO_BYTES_ERR_STR "unicode argument expected"
 #endif
 
 #define UNSUPPORTED_CODEPOINT "Encountered unsupported code point in string."
@@ -391,7 +380,6 @@ static PyMethodDef jellyfish_methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
-#if PY_MAJOR_VERSION >= 3
 #define INITERROR return NULL
 
 static struct PyModuleDef moduledef = {
@@ -407,20 +395,9 @@ static struct PyModuleDef moduledef = {
 };
 
 PyObject* PyInit_cjellyfish(void)
-#else
-
-#define INITERROR return
-
-PyMODINIT_FUNC initcjellyfish(void)
-#endif
 {
     PyObject *unicodedata;
-
-#if PY_MAJOR_VERSION >= 3
     PyObject *module = PyModule_Create(&moduledef);
-#else
-    PyObject *module = Py_InitModule("jellyfish.cjellyfish", jellyfish_methods);
-#endif
 
     if (module == NULL) {
         INITERROR;
@@ -435,7 +412,5 @@ PyMODINIT_FUNC initcjellyfish(void)
         PyObject_GetAttrString(unicodedata, "normalize");
     Py_DECREF(unicodedata);
 
-#if PY_MAJOR_VERSION >= 3
     return module;
-#endif
 }
