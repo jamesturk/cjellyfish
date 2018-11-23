@@ -38,7 +38,7 @@ struct trie {
 };
 
 
-struct trie* trie_create()
+struct trie* trie_create(void)
 {
     return calloc(1, sizeof(struct trie));
 }
@@ -46,12 +46,13 @@ struct trie* trie_create()
 
 void trie_destroy(struct trie* d)
 {
+    size_t i;
     if (!d) {
         return;
     }
     free(d->values);
     if (d->child_nodes) {
-        for (size_t i = 0; i < TRIE_VALUES_PER_LEVEL; ++i) {
+        for (i = 0; i < TRIE_VALUES_PER_LEVEL; ++i) {
             trie_destroy(d->child_nodes[i]);
         }
     }
