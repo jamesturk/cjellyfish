@@ -16,8 +16,6 @@ struct jellyfish_state {
 #define INLINE inline
 #endif
 
-#define UNSUPPORTED_CODEPOINT "Encountered unsupported code point in string."
-
 
 /* Returns a new reference to a PyString (python < 3) or
  * PyBytes (python >= 3.0).
@@ -144,11 +142,6 @@ static PyObject* jellyfish_damerau_levenshtein_distance(PyObject *self,
         PyErr_NoMemory();
         return NULL;
     }
-    else if (result == -2) {
-        PyErr_SetString(PyExc_ValueError, UNSUPPORTED_CODEPOINT);
-        return NULL;
-    }
-
     return Py_BuildValue("i", result);
 }
 
