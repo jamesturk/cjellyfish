@@ -67,6 +67,7 @@ size_t trie_get(struct trie* d, size_t key)
     size_t level_pos = 0;
 
     size_t cur_remainder = key;
+    size_t cur_key;
     while (1) {
         level_keys[level_pos] = cur_remainder % TRIE_VALUES_PER_LEVEL;
         cur_remainder /= TRIE_VALUES_PER_LEVEL;
@@ -76,7 +77,6 @@ size_t trie_get(struct trie* d, size_t key)
         ++level_pos;
     }
 
-    size_t cur_key;
     while (level_pos) {
         cur_key = level_keys[level_pos];
         if (!d->child_nodes || !d->child_nodes[cur_key]) {
@@ -98,6 +98,7 @@ int trie_set(struct trie* d, size_t key, size_t val)
     size_t level_pos = 0;
 
     size_t cur_remainder = key;
+    size_t cur_key;
     while (1) {
         level_keys[level_pos] = cur_remainder % TRIE_VALUES_PER_LEVEL;
         cur_remainder /= TRIE_VALUES_PER_LEVEL;
@@ -107,7 +108,6 @@ int trie_set(struct trie* d, size_t key, size_t val)
         ++level_pos;
     }
 
-    size_t cur_key;
     while (level_pos) {
         cur_key = level_keys[level_pos];
         if (!d->child_nodes) {
