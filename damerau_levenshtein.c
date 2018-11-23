@@ -28,9 +28,9 @@
 */
 
 
-static const size_t TRIE_VALUES_PER_LEVEL = 256;
+#define TRIE_VALUES_PER_LEVEL 256
 /* Each level takes one byte from dictionary key, hence max levels is: */
-static const size_t TRIE_MAX_LEVELS = sizeof(size_t);
+#define TRIE_MAX_LEVELS sizeof(size_t)
 
 struct trie {
     size_t* values;
