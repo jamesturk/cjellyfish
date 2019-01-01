@@ -41,7 +41,7 @@ JFISH_UNICODE *nysiis(const JFISH_UNICODE *str, int len) {
         copy[0] = 'N';
     } else if (len >= 1 && copy[0] == 'K') {
         copy[0] = 'C';
-    } else if (len >= 2 && copy[0] == 'P' && copy[1] == 'H') {
+    } else if (len >= 2 && copy[0] == 'P' && (copy[1] == 'H' || copy[1] == 'F')) {
         copy[0] = 'F';
         copy[1] = 'F';
     } else if (len >= 3 && copy[0] == 'S' && copy[1] == 'C' && copy[2] == 'H') {
