@@ -1,3 +1,4 @@
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <math.h>
 #include "jellyfish.h"
@@ -42,7 +43,7 @@ static INLINE PyObject* normalize(PyObject *mod, const Py_UNICODE *pystr) {
 static PyObject * jellyfish_jaro_winkler(PyObject *self, PyObject *args, PyObject *kw)
 {
     const Py_UNICODE *s1, *s2;
-    int len1, len2;
+    Py_ssize_t len1, len2;
     double result;
     int long_tolerance = 0;
     static char *keywords[] = {"s1", "s2", "long_tolerance", NULL};
@@ -68,7 +69,7 @@ static PyObject * jellyfish_jaro_winkler(PyObject *self, PyObject *args, PyObjec
 static PyObject * jellyfish_jaro_distance(PyObject *self, PyObject *args)
 {
     const Py_UNICODE *s1, *s2;
-    int len1, len2;
+    Py_ssize_t len1, len2;
     double result;
 
     if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
@@ -89,7 +90,7 @@ static PyObject * jellyfish_jaro_distance(PyObject *self, PyObject *args)
 static PyObject * jellyfish_hamming_distance(PyObject *self, PyObject *args)
 {
     const Py_UNICODE *s1, *s2;
-    int len1, len2;
+    Py_ssize_t len1, len2;
     unsigned result;
 
     if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
@@ -105,7 +106,7 @@ static PyObject * jellyfish_hamming_distance(PyObject *self, PyObject *args)
 static PyObject* jellyfish_levenshtein_distance(PyObject *self, PyObject *args)
 {
     const Py_UNICODE *s1, *s2;
-    int len1, len2;
+    Py_ssize_t len1, len2;
     int result;
 
     if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
@@ -129,7 +130,7 @@ static PyObject* jellyfish_damerau_levenshtein_distance(PyObject *self,
                                                         PyObject *args)
 {
     Py_UNICODE *s1, *s2;
-    int len1, len2;
+    Py_ssize_t len1, len2;
     int result;
 
     if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
@@ -148,7 +149,7 @@ static PyObject* jellyfish_damerau_levenshtein_distance(PyObject *self,
 static PyObject* jellyfish_soundex(PyObject *self, PyObject *args)
 {
     const Py_UNICODE *str;
-    int len;
+    Py_ssize_t len;
     PyObject *normalized;
     PyObject* ret;
     char *result;
@@ -181,7 +182,7 @@ static PyObject* jellyfish_soundex(PyObject *self, PyObject *args)
 static PyObject* jellyfish_metaphone(PyObject *self, PyObject *args)
 {
     const Py_UNICODE *str;
-    int len;
+    Py_ssize_t len;
     PyObject *normalized;
     PyObject *ret;
     char *result;
@@ -214,7 +215,7 @@ static PyObject* jellyfish_metaphone(PyObject *self, PyObject *args)
 static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
 {
     const Py_UNICODE *str;
-    int len;
+    Py_ssize_t len;
     Py_UNICODE *result;
     PyObject *ret;
 
@@ -239,7 +240,7 @@ static PyObject* jellyfish_match_rating_comparison(PyObject *self,
                                                    PyObject *args)
 {
     const Py_UNICODE *str1, *str2;
-    int len1, len2;
+    Py_ssize_t len1, len2;
     int result;
 
     if (!PyArg_ParseTuple(args, "u#u#", &str1, &len1, &str2, &len2)) {
@@ -262,7 +263,7 @@ static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
 {
     const Py_UNICODE *str;
     Py_UNICODE *result;
-    int len;
+    Py_ssize_t len;
     PyObject *ret;
 
     if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
@@ -285,7 +286,7 @@ static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
 static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
 {
     const Py_UNICODE *str;
-    int len;
+    Py_ssize_t len;
     Py_UNICODE *result;
     PyObject *ret;
     struct stemmer *z;
