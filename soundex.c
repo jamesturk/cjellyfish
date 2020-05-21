@@ -50,6 +50,10 @@ char* soundex(const char *str)
         case 'r':
             c = '6';
             break;
+        case 'h':
+        case 'w':
+            // do nothing - h and w should allow prior character to pass through
+            break;
         default:
             c = '\0';
         }
