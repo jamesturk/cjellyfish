@@ -66,7 +66,7 @@ static PyObject * jellyfish_jaro_winkler_similarity(PyObject *self, PyObject *ar
     return Py_BuildValue("d", result);
 }
 
-static PyObject * jellyfish_jaro_distance(PyObject *self, PyObject *args)
+static PyObject * jellyfish_jaro_similarity(PyObject *self, PyObject *args)
 {
     const Py_UNICODE *s1, *s2;
     Py_ssize_t len1, len2;
@@ -77,8 +77,8 @@ static PyObject * jellyfish_jaro_distance(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    result = jaro_distance(s1, len1, s2, len2);
-    // see earlier note about jaro_distance return value
+    result = jaro_similarity(s1, len1, s2, len2);
+    // see earlier note about jaro_similarity return value
     if (result < -1) {
         PyErr_NoMemory();
         return NULL;
@@ -327,8 +327,8 @@ static PyMethodDef jellyfish_methods[] = {
      "jaro_winkler_similarity(string1, string2, long_tolerance)\n\n"
      "Do a Jaro-Winkler string comparison between string1 and string2."},
 
-    {"jaro_distance", jellyfish_jaro_distance, METH_VARARGS,
-     "jaro_distance(string1, string2)\n\n"
+    {"jaro_similarity", jellyfish_jaro_similarity, METH_VARARGS,
+     "jaro_similarity(string1, string2)\n\n"
      "Get a Jaro string distance metric for string1 and string2."},
 
     {"hamming_distance", jellyfish_hamming_distance, METH_VARARGS,

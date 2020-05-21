@@ -139,7 +139,7 @@ double jaro_winkler_similarity(const JFISH_UNICODE *ying, int ying_len,
     return _jaro_winkler(ying, ying_len, yang, yang_len, long_tolerance, 1);
 }
 
-double jaro_distance(const JFISH_UNICODE *ying, int ying_len, const JFISH_UNICODE *yang, int yang_len)
+double jaro_similarity(const JFISH_UNICODE *ying, int ying_len, const JFISH_UNICODE *yang, int yang_len)
 {
     return _jaro_winkler(ying, ying_len, yang, yang_len, 0, 0);
 }

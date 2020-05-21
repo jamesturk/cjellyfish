@@ -13,7 +13,7 @@
 #endif
 
 double jaro_winkler_similarity(const JFISH_UNICODE *str1, int len1, const JFISH_UNICODE *str2, int len2, int long_tolerance);
-double jaro_distance(const JFISH_UNICODE *str1, int len1, const JFISH_UNICODE *str2, int len2);
+double jaro_similarity(const JFISH_UNICODE *str1, int len1, const JFISH_UNICODE *str2, int len2);
 
 size_t hamming_distance(const JFISH_UNICODE *str1, int len1,
         const JFISH_UNICODE *str2, int len2);
