@@ -28,7 +28,6 @@ char* metaphone(const char *str)
         if ((c == 'k' && next == 'n') ||
             (c == 'g' && next == 'n') ||
             (c == 'p' && next == 'n') ||
-            (c == 'a' && next == 'c') ||
             (c == 'w' && next == 'r') ||
             (c == 'a' && next == 'e')) {
             str++;
@@ -88,11 +87,14 @@ char* metaphone(const char *str)
         case 'g':
             if (next == 'i' || next == 'e' || next == 'y') {
                 *r++ = 'J';
-            } else if(next != 'h' && next != 'n') {
-                *r++ = 'K';
             } else if(next == 'h' && !(ISVOWEL(nextnext))) {
                 s++;
                 next = tolower(*(s + 1));
+            } else if(next == 'n' && !nextnext) {
+                s++;
+                next = tolower(*(s + 1));
+            } else {
+                *r++ = 'K';
             }
             break;
         case 'h':
