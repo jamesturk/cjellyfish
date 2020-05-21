@@ -112,6 +112,7 @@ static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, J
         }
 
         codex[j++] = c;
+        prev = c;
     }
 
     codex[j] = '\0';
