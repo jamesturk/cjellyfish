@@ -132,7 +132,7 @@ double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
 }
 
 
-double jaro_winkler(const JFISH_UNICODE *ying, int ying_len,
+double jaro_winkler_distance(const JFISH_UNICODE *ying, int ying_len,
         const JFISH_UNICODE *yang, int yang_len,
         int long_tolerance)
 {
