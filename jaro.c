@@ -40,8 +40,14 @@ double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
     // ensure that neither string is blank
     if (!ying_length || !yang_length) return 0;
 
-    search_range = min_len = (ying_length > yang_length) ? ying_length : yang_length;
-
+    if (ying_length > yang_length) {
+        search_range = ying_length;
+        min_len = yang_length;
+    } else {
+        search_range = yang_length;
+        min_len = ying_length;
+    }
+  
     // Blank out the flags
     ying_flag = calloc((ying_length + 1), sizeof(JFISH_UNICODE));
     if (!ying_flag) {
