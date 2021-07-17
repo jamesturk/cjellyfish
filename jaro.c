@@ -111,7 +111,7 @@ double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
     weight /=  3.0;
 
     // Continue to boost the weight if the strings are similar
-    if (winklerize && weight > 0.7 && ying_length > 3 && yang_length > 3) {
+    if (winklerize && weight > 0.7) {
 
         // Adjust for having up to the first 4 characters in common
         j = (min_len >= 4) ? 4 : min_len;
