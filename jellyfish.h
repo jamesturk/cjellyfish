@@ -12,6 +12,26 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
 
+static inline void* safe_malloc(size_t num, size_t size)
+{
+    size_t alloc_size = num * size;
+    if (alloc_size / num != size)
+    {
+        return NULL;
+    }
+    return malloc(alloc_size);
+}
+
+static inline void* safe_matrix_malloc(size_t rows, size_t cols, size_t size)
+{
+    size_t matrix_size = rows * cols;
+    if (matrix_size / rows != cols)
+    {
+        return NULL;
+    }
+    return safe_malloc(matrix_size, size);
+}
+
 double jaro_winkler_similarity(const JFISH_UNICODE *str1, int len1, const JFISH_UNICODE *str2, int len2, int long_tolerance);
 double jaro_similarity(const JFISH_UNICODE *str1, int len1, const JFISH_UNICODE *str2, int len2);
 

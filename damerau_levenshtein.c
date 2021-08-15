@@ -154,7 +154,7 @@ int damerau_levenshtein_distance(const JFISH_UNICODE *s1, const JFISH_UNICODE *s
         return -1;
     }
 
-    dist = malloc((len1 + 2) * cols * sizeof(size_t));
+    dist = safe_matrix_malloc((len1 + 2), cols, sizeof(size_t));
     if (!dist) {
         result = -1;
         goto cleanup_da;
