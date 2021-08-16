@@ -11,7 +11,7 @@ int levenshtein_distance(const JFISH_UNICODE *s1, int s1_len, const JFISH_UNICOD
 
     unsigned result;
     unsigned d1, d2, d3;
-    unsigned *dist = malloc(rows * cols * sizeof(unsigned));
+    unsigned *dist = safe_matrix_malloc(rows, cols, sizeof(unsigned));
     if (!dist) {
         return -1;
     }

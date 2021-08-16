@@ -11,7 +11,7 @@ JFISH_UNICODE *nysiis(const JFISH_UNICODE *str, int len) {
     JFISH_UNICODE *code = NULL;
     JFISH_UNICODE *p, *cp;
 
-    copy = malloc((len + 1) * sizeof(JFISH_UNICODE));
+    copy = safe_malloc((len+1), sizeof(JFISH_UNICODE));
     if (!copy) {
         return NULL;
     }

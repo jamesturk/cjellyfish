@@ -303,7 +303,7 @@ static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    result = malloc((len+1) * sizeof(Py_UNICODE));
+    result = safe_malloc((len+1), sizeof(Py_UNICODE));
     if (!result) {
         free_stemmer(z);
         PyErr_NoMemory();
