@@ -50,24 +50,26 @@ JFISH_UNICODE *nysiis(const JFISH_UNICODE *str, int len) {
     }
 
     // Step 2
-    c1 = copy[len - 1];
-    if (c1 == 'E') {
-        c2 = copy[len - 2];
-        if (c2 == 'E' || c2 == 'I') {
-            copy[len - 1] = ' ';
-            copy[len - 2] = 'Y';
-        }
-    } else if (c1 == 'T') {
-        c2 = copy[len - 2];
-        if (c2 == 'D' || c2 == 'R' || c2 == 'N') {
-            copy[len - 1] = ' ';
-            copy[len - 2] = 'D';
-        }
-    } else if (c1 == 'D') {
-        c2 = copy[len - 2];
-        if (c2 == 'R' || c2 == 'N') {
-            copy[len - 1] = ' ';
-            copy[len - 2] = 'D';
+    if (len > 1) {
+        c1 = copy[len - 1];
+        if (c1 == 'E') {
+            c2 = copy[len - 2];
+            if (c2 == 'E' || c2 == 'I') {
+                copy[len - 1] = ' ';
+                copy[len - 2] = 'Y';
+            }
+        } else if (c1 == 'T') {
+            c2 = copy[len - 2];
+            if (c2 == 'D' || c2 == 'R' || c2 == 'N') {
+                copy[len - 1] = ' ';
+                copy[len - 2] = 'D';
+            }
+        } else if (c1 == 'D') {
+            c2 = copy[len - 2];
+            if (c2 == 'R' || c2 == 'N') {
+                copy[len - 1] = ' ';
+                copy[len - 2] = 'D';
+            }
         }
     }
 
