@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include "jellyfish.h"
 
-#define NOTNUM(c)   ((c>57) || (c<48))
-
 /* borrowed heavily from strcmp95.c
  *    http://www.census.gov/geo/msb/stand/strcmp.c
  */
@@ -115,7 +113,7 @@ double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
 
         // Adjust for having up to the first 4 characters in common
         j = (min_len >= 4) ? 4 : min_len;
-        for (i=0; ((i<j) && (ying[i] == yang[i]) && (NOTNUM(ying[i]))); i++);
+        for (i=0; ((i<j) && (ying[i] == yang[i])); i++);
         if (i) {
             weight += i * 0.1 * (1.0 - weight);
         }
@@ -125,10 +123,8 @@ double _jaro_winkler(const JFISH_UNICODE *ying, int ying_length,
            the agreeing characters must be > .5 of remaining characters.
         */
         if ((long_tolerance) && (min_len>4) && (common_chars>i+1) && (2*common_chars>=min_len+i)) {
-            if (NOTNUM(ying[0])) {
-                weight += (double) (1.0-weight) *
-                    ((double) (common_chars-i-1) / ((double) (ying_length+yang_length-i*2+2)));
-            }
+            weight += (double) (1.0-weight) *
+                ((double) (common_chars-i-1) / ((double) (ying_length+yang_length-i*2+2)));
         }
     }
 
