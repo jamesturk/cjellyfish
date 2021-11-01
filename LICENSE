@@ -1,6 +1,8 @@
 Copyright (c) 2015, James Turk
 Copyright (c) 2015, Sunlight Labs
 
+(Some code in jaro.c borrowed heavily from strcmp95.c which is a Public Domain Work from the US Census)
+
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
