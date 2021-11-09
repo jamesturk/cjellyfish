@@ -24,14 +24,14 @@ struct jellyfish_state {
  * If passed a PyUnicode, the returned object will be NFKD UTF-8.
  * If passed a PyString or PyBytes no conversion is done.
  */
-static INLINE PyObject* normalize(PyObject *mod, const Py_UNICODE *pystr) {
+static INLINE PyObject* normalize(PyObject *mod, PyObject *pystr) {
     PyObject *unicodedata_normalize;
     PyObject *normalized;
     PyObject *utf8;
 
     unicodedata_normalize = GETSTATE(mod)->unicodedata_normalize;
     normalized = PyObject_CallFunction(unicodedata_normalize,
-                                       "su", "NFKD", pystr);
+                                       "sO", "NFKD", pystr);
     if (!normalized) {
         return NULL;
     }
@@ -42,18 +42,33 @@ static INLINE PyObject* normalize(PyObject *mod, const Py_UNICODE *pystr) {
 
 static PyObject * jellyfish_jaro_winkler_similarity(PyObject *self, PyObject *args, PyObject *kw)
 {
-    const Py_UNICODE *s1, *s2;
+    PyObject *u1, *u2;
+    const Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     double result;
     int long_tolerance = 0;
     static char *keywords[] = {"s1", "s2", "long_tolerance", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kw, "u#u#|i", keywords, &s1, &len1, &s2, &len2, &long_tolerance)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kw, "UU|i", keywords, &u1, &u2, &long_tolerance)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
         return NULL;
     }
+    s1 = PyUnicode_AsUCS4Copy(u1);
+    if (s1 == NULL) {
+        return NULL;
+    }
+    s2 = PyUnicode_AsUCS4Copy(u2);
+    if (s2 == NULL) {
+        PyMem_Free(s1);
+        return NULL;
+    }
+    len1 = PyUnicode_GET_LENGTH(u1);
+    len2 = PyUnicode_GET_LENGTH(u2);
 
     result = jaro_winkler_similarity(s1, len1, s2, len2, long_tolerance);
+    PyMem_Free(s1);
+    PyMem_Free(s2);
+
     // jaro returns a big negative number on error, don't use
     // 0 here in case there's floating point inaccuracy
     // .. used to use NaN but different compilers (*cough*MSVC*cough)
@@ -68,16 +83,31 @@ static PyObject * jellyfish_jaro_winkler_similarity(PyObject *self, PyObject *ar
 
 static PyObject * jellyfish_jaro_similarity(PyObject *self, PyObject *args)
 {
-    const Py_UNICODE *s1, *s2;
+    PyObject *u1, *u2;
+    const Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     double result;
 
-    if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
+    if (!PyArg_ParseTuple(args, "UU", &u1, &u2)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
+        return NULL;
+    }
+    len1 = PyUnicode_GET_LENGTH(u1);
+    len2 = PyUnicode_GET_LENGTH(u2);
+    s1 = PyUnicode_AsUCS4Copy(u1);
+    if (s1 == NULL) {
+        return NULL;
+    }
+    s2 = PyUnicode_AsUCS4Copy(u2);
+    if (s2 == NULL) {
+        PyMem_Free(s1);
         return NULL;
     }
 
     result = jaro_similarity(s1, len1, s2, len2);
+    PyMem_Free(s1);
+    PyMem_Free(s2);
+
     // see earlier note about jaro_similarity return value
     if (result < -1) {
         PyErr_NoMemory();
@@ -89,32 +119,61 @@ static PyObject * jellyfish_jaro_similarity(PyObject *self, PyObject *args)
 
 static PyObject * jellyfish_hamming_distance(PyObject *self, PyObject *args)
 {
-    const Py_UNICODE *s1, *s2;
+    PyObject *u1, *u2;
+    const Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     unsigned result;
 
-    if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
+    if (!PyArg_ParseTuple(args, "UU", &u1, &u2)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
+        return NULL;
+    }
+    len1 = PyUnicode_GET_LENGTH(u1);
+    len2 = PyUnicode_GET_LENGTH(u2);
+    s1 = PyUnicode_AsUCS4Copy(u1);
+    if (s1 == NULL) {
+        return NULL;
+    }
+    s2 = PyUnicode_AsUCS4Copy(u2);
+    if (s2 == NULL) {
+        PyMem_Free(s1);
         return NULL;
     }
 
     result = hamming_distance(s1, len1, s2, len2);
+    PyMem_Free(s1);
+    PyMem_Free(s2);
 
     return Py_BuildValue("I", result);
 }
 
 static PyObject* jellyfish_levenshtein_distance(PyObject *self, PyObject *args)
 {
-    const Py_UNICODE *s1, *s2;
+    PyObject *u1, *u2;
+    const Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     int result;
 
-    if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
+    if (!PyArg_ParseTuple(args, "UU", &u1, &u2)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
+        return NULL;
+    }
+    len1 = PyUnicode_GET_LENGTH(u1);
+    len2 = PyUnicode_GET_LENGTH(u2);
+    s1 = PyUnicode_AsUCS4Copy(u1);
+    if (s1 == NULL) {
+        return NULL;
+    }
+    s2 = PyUnicode_AsUCS4Copy(u2);
+    if (s2 == NULL) {
+        PyMem_Free(s1);
         return NULL;
     }
 
     result = levenshtein_distance(s1, len1, s2, len2);
+    PyMem_Free(s1);
+    PyMem_Free(s2);
+
     if (result == -1) {
         // levenshtein_distance only returns failure code (-1) on
         // failed malloc
@@ -129,16 +188,30 @@ static PyObject* jellyfish_levenshtein_distance(PyObject *self, PyObject *args)
 static PyObject* jellyfish_damerau_levenshtein_distance(PyObject *self,
                                                         PyObject *args)
 {
-    Py_UNICODE *s1, *s2;
+    PyObject *u1, *u2;
+    Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     int result;
 
-    if (!PyArg_ParseTuple(args, "u#u#", &s1, &len1, &s2, &len2)) {
+    if (!PyArg_ParseTuple(args, "UU", &u1, &u2)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
+        return NULL;
+    }
+    len1 = PyUnicode_GET_LENGTH(u1);
+    len2 = PyUnicode_GET_LENGTH(u2);
+    s1 = PyUnicode_AsUCS4Copy(u1);
+    if (s1 == NULL) {
+        return NULL;
+    }
+    s2 = PyUnicode_AsUCS4Copy(u2);
+    if (s2 == NULL) {
+        PyMem_Free(s1);
         return NULL;
     }
 
     result = damerau_levenshtein_distance(s1, s2, len1, len2);
+    PyMem_Free(s1);
+    PyMem_Free(s2);
     if (result == -1) {
         PyErr_NoMemory();
         return NULL;
@@ -148,13 +221,12 @@ static PyObject* jellyfish_damerau_levenshtein_distance(PyObject *self,
 
 static PyObject* jellyfish_soundex(PyObject *self, PyObject *args)
 {
-    const Py_UNICODE *str;
-    Py_ssize_t len;
+    PyObject *str;
     PyObject *normalized;
     PyObject* ret;
     char *result;
 
-    if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
+    if (!PyArg_ParseTuple(args, "U", &str)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
         return NULL;
     }
@@ -181,13 +253,12 @@ static PyObject* jellyfish_soundex(PyObject *self, PyObject *args)
 
 static PyObject* jellyfish_metaphone(PyObject *self, PyObject *args)
 {
-    const Py_UNICODE *str;
-    Py_ssize_t len;
+    PyObject *str;
     PyObject *normalized;
     PyObject *ret;
     char *result;
 
-    if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
+    if (!PyArg_ParseTuple(args, "U", &str)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
         return NULL;
     }
@@ -214,17 +285,24 @@ static PyObject* jellyfish_metaphone(PyObject *self, PyObject *args)
 
 static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
 {
-    const Py_UNICODE *str;
+    PyObject *ustr;
+    const Py_UCS4 *str;
     Py_ssize_t len;
-    Py_UNICODE *result;
+    Py_UCS4 *result;
     PyObject *ret;
 
-    if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
+    if (!PyArg_ParseTuple(args, "U", &ustr)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
+        return NULL;
+    }
+    len = PyUnicode_GET_LENGTH(ustr);
+    str = PyUnicode_AsUCS4Copy(ustr);
+    if (str == NULL) {
         return NULL;
     }
 
     result = match_rating_codex(str, len);
+    PyMem_Free(str);
     if (!result) {
         PyErr_NoMemory();
         return NULL;
@@ -239,16 +317,30 @@ static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
 static PyObject* jellyfish_match_rating_comparison(PyObject *self,
                                                    PyObject *args)
 {
-    const Py_UNICODE *str1, *str2;
+    PyObject *u1, *u2;
+    const Py_UCS4 *str1, *str2;
     Py_ssize_t len1, len2;
     int result;
 
-    if (!PyArg_ParseTuple(args, "u#u#", &str1, &len1, &str2, &len2)) {
+    if (!PyArg_ParseTuple(args, "UU", &u1, &u2)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
+        return NULL;
+    }
+    len1 = PyUnicode_GET_LENGTH(u1);
+    len2 = PyUnicode_GET_LENGTH(u2);
+    str1 = PyUnicode_AsUCS4Copy(u1);
+    if (str1 == NULL) {
+        return NULL;
+    }
+    str2 = PyUnicode_AsUCS4Copy(u2);
+    if (str2 == NULL) {
+        PyMem_Free(str1);
         return NULL;
     }
 
     result = match_rating_comparison(str1, len1, str2, len2);
+    PyMem_Free(str1);
+    PyMem_Free(str2);
 
     if (result == -1) {
         Py_RETURN_NONE;
@@ -261,13 +353,19 @@ static PyObject* jellyfish_match_rating_comparison(PyObject *self,
 
 static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
 {
-    const Py_UNICODE *str;
-    Py_UNICODE *result;
+    PyObject *ustr;
+    const Py_UCS4 *str;
+    Py_UCS4 *result;
     Py_ssize_t len;
     PyObject *ret;
 
-    if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
+    if (!PyArg_ParseTuple(args, "U", &ustr)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
+        return NULL;
+    }
+    str = PyUnicode_AsUCS4Copy(ustr);
+    len = PyUnicode_GET_LENGTH(ustr);
+    if (str == NULL) {
         return NULL;
     }
 
@@ -285,15 +383,21 @@ static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
 
 static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
 {
-    const Py_UNICODE *str;
+    PyObject *ustr;
+    const Py_UCS4 *str;
     Py_ssize_t len;
-    Py_UNICODE *result;
+    Py_UCS4 *result;
     PyObject *ret;
     struct stemmer *z;
     int end;
 
-    if (!PyArg_ParseTuple(args, "u#", &str, &len)) {
+    if (!PyArg_ParseTuple(args, "U", &ustr)) {
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
+        return NULL;
+    }
+    str = PyUnicode_AsUCS4Copy(ustr);
+    len = PyUnicode_GET_LENGTH(ustr);
+    if (str == NULL) {
         return NULL;
     }
 
@@ -303,13 +407,13 @@ static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    result = safe_malloc((len+1), sizeof(Py_UNICODE));
+    result = safe_malloc((len+1), sizeof(Py_UCS4));
     if (!result) {
         free_stemmer(z);
         PyErr_NoMemory();
         return NULL;
     }
-    memcpy(result, str, len * sizeof(Py_UNICODE));
+    memcpy(result, str, len * sizeof(Py_UCS4));
 
     end = stem(z, result, len - 1);
     result[end + 1] = '\0';
