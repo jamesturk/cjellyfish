@@ -1,8 +1,8 @@
 #include "jellyfish.h"
 #include <ctype.h>
 
-size_t hamming_distance(const Py_UNICODE *s1, int len1,
-                        const Py_UNICODE *s2, int len2) {
+size_t hamming_distance(const JFISH_UNICODE *s1, int len1,
+                        const JFISH_UNICODE *s2, int len2) {
     unsigned distance = 0;
     int i1 = 0;
     int i2 = 0;

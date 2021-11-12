@@ -5,7 +5,7 @@
 
 #if CJELLYFISH_PYTHON
 #include <Python.h>
-#define JFISH_UNICODE Py_UNICODE
+#define JFISH_UNICODE Py_UCS4
 #endif
 
 #ifndef MIN
