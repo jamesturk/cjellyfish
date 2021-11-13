@@ -18,6 +18,14 @@ struct jellyfish_state {
 #endif
 
 
+/* Create PyUnicode object from NUL terminated Py_UCS4 string. */
+static PyObject* unicode_from_ucs4(const Py_UCS4 *str)
+{
+    size_t len = 0;
+    while (str[len]) len++;
+    return PyUnicode_FromKindAndData(PyUnicode_4BYTE_KIND, (void*)str, len);
+}
+
 /* Returns a new reference to a PyString (python < 3) or
  * PyBytes (python >= 3.0).
  *
@@ -308,7 +316,7 @@ static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    ret = Py_BuildValue("u", result);
+    ret = unicode_from_ucs4(result);
     free(result);
 
     return ret;
@@ -375,7 +383,7 @@ static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    ret = Py_BuildValue("u", result);
+    ret = unicode_from_ucs4(result);
     free(result);
 
     return ret;
@@ -418,7 +426,7 @@ static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
     end = stem(z, result, len - 1);
     result[end + 1] = '\0';
 
-    ret = Py_BuildValue("u", result);
+    ret = unicode_from_ucs4(result);
 
     free(result);
     free_stemmer(z);
