@@ -51,7 +51,7 @@ static INLINE PyObject* normalize(PyObject *mod, PyObject *pystr) {
 static PyObject * jellyfish_jaro_winkler_similarity(PyObject *self, PyObject *args, PyObject *kw)
 {
     PyObject *u1, *u2;
-    const Py_UCS4 *s1, *s2;
+    Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     double result;
     int long_tolerance = 0;
@@ -92,7 +92,7 @@ static PyObject * jellyfish_jaro_winkler_similarity(PyObject *self, PyObject *ar
 static PyObject * jellyfish_jaro_similarity(PyObject *self, PyObject *args)
 {
     PyObject *u1, *u2;
-    const Py_UCS4 *s1, *s2;
+    Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     double result;
 
@@ -128,7 +128,7 @@ static PyObject * jellyfish_jaro_similarity(PyObject *self, PyObject *args)
 static PyObject * jellyfish_hamming_distance(PyObject *self, PyObject *args)
 {
     PyObject *u1, *u2;
-    const Py_UCS4 *s1, *s2;
+    Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     unsigned result;
 
@@ -158,7 +158,7 @@ static PyObject * jellyfish_hamming_distance(PyObject *self, PyObject *args)
 static PyObject* jellyfish_levenshtein_distance(PyObject *self, PyObject *args)
 {
     PyObject *u1, *u2;
-    const Py_UCS4 *s1, *s2;
+    Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     int result;
 
@@ -294,7 +294,7 @@ static PyObject* jellyfish_metaphone(PyObject *self, PyObject *args)
 static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
 {
     PyObject *ustr;
-    const Py_UCS4 *str;
+    Py_UCS4 *str;
     Py_ssize_t len;
     Py_UCS4 *result;
     PyObject *ret;
@@ -326,7 +326,7 @@ static PyObject* jellyfish_match_rating_comparison(PyObject *self,
                                                    PyObject *args)
 {
     PyObject *u1, *u2;
-    const Py_UCS4 *str1, *str2;
+    Py_UCS4 *str1, *str2;
     Py_ssize_t len1, len2;
     int result;
 
@@ -362,7 +362,7 @@ static PyObject* jellyfish_match_rating_comparison(PyObject *self,
 static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
 {
     PyObject *ustr;
-    const Py_UCS4 *str;
+    Py_UCS4 *str;
     Py_UCS4 *result;
     Py_ssize_t len;
     PyObject *ret;
@@ -392,7 +392,7 @@ static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
 static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
 {
     PyObject *ustr;
-    const Py_UCS4 *str;
+    Py_UCS4 *str;
     Py_ssize_t len;
     Py_UCS4 *result;
     PyObject *ret;
