@@ -18,6 +18,14 @@ struct jellyfish_state {
 #endif
 
 
+/* Create PyUnicode object from NUL terminated Py_UCS4 string. */
+static PyObject* unicode_from_ucs4(const Py_UCS4 *str)
+{
+    size_t len = 0;
+    while (str[len]) len++;
+    return PyUnicode_FromKindAndData(PyUnicode_4BYTE_KIND, (void*)str, len);
+}
+
 /* Returns a new reference to a PyString (python < 3) or
  * PyBytes (python >= 3.0).
  *
@@ -43,7 +51,7 @@ static INLINE PyObject* normalize(PyObject *mod, PyObject *pystr) {
 static PyObject * jellyfish_jaro_winkler_similarity(PyObject *self, PyObject *args, PyObject *kw)
 {
     PyObject *u1, *u2;
-    const Py_UCS4 *s1, *s2;
+    Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     double result;
     int long_tolerance = 0;
@@ -84,7 +92,7 @@ static PyObject * jellyfish_jaro_winkler_similarity(PyObject *self, PyObject *ar
 static PyObject * jellyfish_jaro_similarity(PyObject *self, PyObject *args)
 {
     PyObject *u1, *u2;
-    const Py_UCS4 *s1, *s2;
+    Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     double result;
 
@@ -120,7 +128,7 @@ static PyObject * jellyfish_jaro_similarity(PyObject *self, PyObject *args)
 static PyObject * jellyfish_hamming_distance(PyObject *self, PyObject *args)
 {
     PyObject *u1, *u2;
-    const Py_UCS4 *s1, *s2;
+    Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     unsigned result;
 
@@ -150,7 +158,7 @@ static PyObject * jellyfish_hamming_distance(PyObject *self, PyObject *args)
 static PyObject* jellyfish_levenshtein_distance(PyObject *self, PyObject *args)
 {
     PyObject *u1, *u2;
-    const Py_UCS4 *s1, *s2;
+    Py_UCS4 *s1, *s2;
     Py_ssize_t len1, len2;
     int result;
 
@@ -286,7 +294,7 @@ static PyObject* jellyfish_metaphone(PyObject *self, PyObject *args)
 static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
 {
     PyObject *ustr;
-    const Py_UCS4 *str;
+    Py_UCS4 *str;
     Py_ssize_t len;
     Py_UCS4 *result;
     PyObject *ret;
@@ -308,7 +316,7 @@ static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    ret = Py_BuildValue("u", result);
+    ret = unicode_from_ucs4(result);
     free(result);
 
     return ret;
@@ -318,7 +326,7 @@ static PyObject* jellyfish_match_rating_comparison(PyObject *self,
                                                    PyObject *args)
 {
     PyObject *u1, *u2;
-    const Py_UCS4 *str1, *str2;
+    Py_UCS4 *str1, *str2;
     Py_ssize_t len1, len2;
     int result;
 
@@ -354,7 +362,7 @@ static PyObject* jellyfish_match_rating_comparison(PyObject *self,
 static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
 {
     PyObject *ustr;
-    const Py_UCS4 *str;
+    Py_UCS4 *str;
     Py_UCS4 *result;
     Py_ssize_t len;
     PyObject *ret;
@@ -375,7 +383,7 @@ static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    ret = Py_BuildValue("u", result);
+    ret = unicode_from_ucs4(result);
     free(result);
 
     return ret;
@@ -384,7 +392,7 @@ static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
 static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
 {
     PyObject *ustr;
-    const Py_UCS4 *str;
+    Py_UCS4 *str;
     Py_ssize_t len;
     Py_UCS4 *result;
     PyObject *ret;
@@ -418,7 +426,7 @@ static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
     end = stem(z, result, len - 1);
     result[end + 1] = '\0';
 
-    ret = Py_BuildValue("u", result);
+    ret = unicode_from_ucs4(result);
 
     free(result);
     free_stemmer(z);
