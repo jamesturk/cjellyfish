@@ -11,7 +11,7 @@
    Porter, 1980, An algorithm for suffix stripping, Program, Vol. 14,
    no. 3, pp 130-137,
 
-   only differing from it at the points maked --DEPARTURE-- below.
+   only differing from it at the points marked --DEPARTURE-- below.
 
    See also http://www.tartarus.org/~martin/PorterStemmer
 
