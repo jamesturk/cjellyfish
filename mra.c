@@ -88,6 +88,10 @@ JFISH_UNICODE* match_rating_codex(const JFISH_UNICODE *str, size_t len) {
     return codex;
 }
 
+static int is_vowel(JFISH_UNICODE c) {
+    return c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U';
+}
+
 static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, JFISH_UNICODE codex[7]) {
     size_t i, j;
     JFISH_UNICODE c, prev;
@@ -96,22 +100,15 @@ static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, J
     for(i = 0, j = 0; i < len && j < 7; i++) {
         c = toupper(str[i]);
 
-        if (c == ' ' || (i != 0 && (c == 'A' || c == 'E' || c == 'I' ||
-                                    c == 'O' || c == 'U'))) {
-            continue;
-        }
+        if ((c != ' ' && i == 0 && is_vowel(c)) || (!is_vowel(c) && c != prev)) {
+            if (j == 6) {
+                codex[3] = codex[4];
+                codex[4] = codex[5];
+                j = 5;
+            }
 
-        if (c == prev) {
-            continue;
+            codex[j++] = c;
         }
-
-        if (j == 6) {
-            codex[3] = codex[4];
-            codex[4] = codex[5];
-            j = 5;
-        }
-
-        codex[j++] = c;
         prev = c;
     }
 
