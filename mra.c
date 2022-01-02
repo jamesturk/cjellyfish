@@ -92,15 +92,21 @@ static int is_vowel(JFISH_UNICODE c) {
     return c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U';
 }
 
+#define TRUE 1
+#define FALSE 0
+
 static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, JFISH_UNICODE codex[7]) {
     size_t i, j;
+    int first;
     JFISH_UNICODE c, prev;
 
     prev = '\0';
+    first = TRUE;
     for(i = 0, j = 0; i < len && j < 7; i++) {
+        if (c == ' ') continue;
         c = toupper(str[i]);
 
-        if ((c != ' ' && i == 0 && is_vowel(c)) || (!is_vowel(c) && c != prev)) {
+        if (first || (!is_vowel(c) && c != prev)) {
             if (j == 6) {
                 codex[3] = codex[4];
                 codex[4] = codex[5];
@@ -110,6 +116,7 @@ static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, J
             codex[j++] = c;
         }
         prev = c;
+        first = FALSE;
     }
 
     codex[j] = '\0';
