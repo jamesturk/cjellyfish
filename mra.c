@@ -2,6 +2,12 @@
 #include <string.h>
 #include <ctype.h>
 
+#define ISVOWEL(c) ((c) == 'A' || (c) == 'E' || (c) == 'I' || \
+                    (c) == 'O' || (c) == 'U')
+
+#define TRUE 1
+#define FALSE 0
+
 static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, JFISH_UNICODE codex[7]);
 
 int match_rating_comparison(const JFISH_UNICODE *s1, size_t len1, const JFISH_UNICODE *s2, size_t len2) {
@@ -89,13 +95,6 @@ JFISH_UNICODE* match_rating_codex(const JFISH_UNICODE *str, size_t len) {
     return codex;
 }
 
-static int is_vowel(JFISH_UNICODE c) {
-    return c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U';
-}
-
-#define TRUE 1
-#define FALSE 0
-
 static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, JFISH_UNICODE codex[7]) {
     /* str is already in uppercase when this function is called */
     size_t i, j;
@@ -111,7 +110,7 @@ static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, J
             continue;
         }
 
-        if (first || (!is_vowel(c) && c != prev)) {
+        if (first || (!ISVOWEL(c) && c != prev)) {
             if (j == 6) {
                 codex[3] = codex[4];
                 codex[4] = codex[5];
