@@ -293,7 +293,7 @@ static PyObject* jellyfish_metaphone(PyObject *self, PyObject *args)
 
 static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
 {
-    PyObject *ustr;
+    PyObject *ustr, *ustr_upper;
     Py_UCS4 *str;
     Py_ssize_t len;
     Py_UCS4 *result;
@@ -303,14 +303,17 @@ static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
         return NULL;
     }
-    len = PyUnicode_GET_LENGTH(ustr);
-    str = PyUnicode_AsUCS4Copy(ustr);
+    ustr_upper = PyObject_CallMethod(ustr, "upper", NULL);
+    len = PyUnicode_GET_LENGTH(ustr_upper);
+    str = PyUnicode_AsUCS4Copy(ustr_upper);
     if (str == NULL) {
+        Py_DECREF(ustr_upper);
         return NULL;
     }
 
     result = match_rating_codex(str, len);
     PyMem_Free(str);
+    Py_DECREF(ustr_upper);
     if (!result) {
         PyErr_NoMemory();
         return NULL;
@@ -325,7 +328,7 @@ static PyObject* jellyfish_match_rating_codex(PyObject *self, PyObject *args)
 static PyObject* jellyfish_match_rating_comparison(PyObject *self,
                                                    PyObject *args)
 {
-    PyObject *u1, *u2;
+    PyObject *u1, *u2, *u_upper1, *u_upper2;
     Py_UCS4 *str1, *str2;
     Py_ssize_t len1, len2;
     int result;
@@ -334,21 +337,29 @@ static PyObject* jellyfish_match_rating_comparison(PyObject *self,
         PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
         return NULL;
     }
-    len1 = PyUnicode_GET_LENGTH(u1);
-    len2 = PyUnicode_GET_LENGTH(u2);
-    str1 = PyUnicode_AsUCS4Copy(u1);
+    u_upper1 = PyObject_CallMethod(u1, "upper", NULL);
+    u_upper2 = PyObject_CallMethod(u2, "upper", NULL);
+    len1 = PyUnicode_GET_LENGTH(u_upper1);
+    len2 = PyUnicode_GET_LENGTH(u_upper2);
+    str1 = PyUnicode_AsUCS4Copy(u_upper1);
     if (str1 == NULL) {
+        Py_DECREF(u_upper1);
+        Py_DECREF(u_upper2);
         return NULL;
     }
-    str2 = PyUnicode_AsUCS4Copy(u2);
+    str2 = PyUnicode_AsUCS4Copy(u_upper2);
     if (str2 == NULL) {
         PyMem_Free(str1);
+        Py_DECREF(u_upper1);
+        Py_DECREF(u_upper2);
         return NULL;
     }
 
     result = match_rating_comparison(str1, len1, str2, len2);
     PyMem_Free(str1);
     PyMem_Free(str2);
+    Py_DECREF(u_upper1);
+    Py_DECREF(u_upper2);
 
     if (result == -1) {
         Py_RETURN_NONE;

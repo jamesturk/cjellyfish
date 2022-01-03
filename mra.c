@@ -2,9 +2,16 @@
 #include <string.h>
 #include <ctype.h>
 
+#define ISVOWEL(c) ((c) == 'A' || (c) == 'E' || (c) == 'I' || \
+                    (c) == 'O' || (c) == 'U')
+
+#define TRUE 1
+#define FALSE 0
+
 static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, JFISH_UNICODE codex[7]);
 
 int match_rating_comparison(const JFISH_UNICODE *s1, size_t len1, const JFISH_UNICODE *s2, size_t len2) {
+    /* s1 and s2 are already in uppercase when this function is called */
     size_t s1c_len, s2c_len;
     size_t i, j;
     int diff;
@@ -89,30 +96,31 @@ JFISH_UNICODE* match_rating_codex(const JFISH_UNICODE *str, size_t len) {
 }
 
 static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, JFISH_UNICODE codex[7]) {
+    /* str is already in uppercase when this function is called */
     size_t i, j;
+    int first;
     JFISH_UNICODE c, prev;
 
     prev = '\0';
+    first = TRUE;
     for(i = 0, j = 0; i < len && j < 7; i++) {
-        c = toupper(str[i]);
-
-        if (c == ' ' || (i != 0 && (c == 'A' || c == 'E' || c == 'I' ||
-                                    c == 'O' || c == 'U'))) {
+        c = str[i];
+        if (!Py_UNICODE_ISALPHA(c)) {
+            prev = c;
             continue;
         }
 
-        if (c == prev) {
-            continue;
-        }
+        if (first || (!ISVOWEL(c) && c != prev)) {
+            if (j == 6) {
+                codex[3] = codex[4];
+                codex[4] = codex[5];
+                j = 5;
+            }
 
-        if (j == 6) {
-            codex[3] = codex[4];
-            codex[4] = codex[5];
-            j = 5;
+            codex[j++] = c;
         }
-
-        codex[j++] = c;
         prev = c;
+        first = FALSE;
     }
 
     codex[j] = '\0';
