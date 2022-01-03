@@ -5,6 +5,7 @@
 static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, JFISH_UNICODE codex[7]);
 
 int match_rating_comparison(const JFISH_UNICODE *s1, size_t len1, const JFISH_UNICODE *s2, size_t len2) {
+    /* s1 and s2 are already in uppercase when this function is called */
     size_t s1c_len, s2c_len;
     size_t i, j;
     int diff;
@@ -96,6 +97,7 @@ static int is_vowel(JFISH_UNICODE c) {
 #define FALSE 0
 
 static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, JFISH_UNICODE codex[7]) {
+    /* str is already in uppercase when this function is called */
     size_t i, j;
     int first;
     JFISH_UNICODE c, prev;
@@ -103,8 +105,11 @@ static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, J
     prev = '\0';
     first = TRUE;
     for(i = 0, j = 0; i < len && j < 7; i++) {
-        if (c == ' ') continue;
-        c = toupper(str[i]);
+        c = str[i];
+        if (!Py_UNICODE_ISALPHA(c)) {
+            prev = c;
+            continue;
+        }
 
         if (first || (!is_vowel(c) && c != prev)) {
             if (j == 6) {
