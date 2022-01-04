@@ -6,6 +6,12 @@
 #if CJELLYFISH_PYTHON
 #include <Python.h>
 #define JFISH_UNICODE Py_UCS4
+#define ISALPHA Py_UNICODE_ISALPHA
+#else
+#include <wctype.h>
+#include <wchar.h>
+#define JFISH_UNICODE wint_t
+#define ISALPHA iswalpha
 #endif
 
 #ifndef MIN
