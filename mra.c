@@ -105,7 +105,7 @@ static size_t compute_match_rating_codex(const JFISH_UNICODE *str, size_t len, J
     first = TRUE;
     for(i = 0, j = 0; i < len && j < 7; i++) {
         c = str[i];
-        if (!Py_UNICODE_ISALPHA(c)) {
+        if (!ISALPHA(c)) {
             prev = c;
             continue;
         }
