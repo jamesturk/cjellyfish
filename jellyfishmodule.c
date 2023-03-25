@@ -400,50 +400,6 @@ static PyObject* jellyfish_nysiis(PyObject *self, PyObject *args)
     return ret;
 }
 
-static PyObject* jellyfish_porter_stem(PyObject *self, PyObject *args)
-{
-    PyObject *ustr;
-    Py_UCS4 *str;
-    Py_ssize_t len;
-    Py_UCS4 *result;
-    PyObject *ret;
-    struct stemmer *z;
-    int end;
-
-    if (!PyArg_ParseTuple(args, "U", &ustr)) {
-        PyErr_SetString(PyExc_TypeError, NO_BYTES_ERR_STR);
-        return NULL;
-    }
-    str = PyUnicode_AsUCS4Copy(ustr);
-    len = PyUnicode_GET_LENGTH(ustr);
-    if (str == NULL) {
-        return NULL;
-    }
-
-    z = create_stemmer();
-    if (!z) {
-        PyErr_NoMemory();
-        return NULL;
-    }
-
-    result = safe_malloc((len+1), sizeof(Py_UCS4));
-    if (!result) {
-        free_stemmer(z);
-        PyErr_NoMemory();
-        return NULL;
-    }
-    memcpy(result, str, len * sizeof(Py_UCS4));
-
-    end = stem(z, result, len - 1);
-    result[end + 1] = '\0';
-
-    ret = unicode_from_ucs4(result);
-
-    free(result);
-    free_stemmer(z);
-
-    return ret;
-}
 
 static PyMethodDef jellyfish_methods[] = {
     {"jaro_winkler_similarity", (PyCFunction)jellyfish_jaro_winkler_similarity, METH_VARARGS|METH_KEYWORDS,
@@ -488,11 +444,6 @@ static PyMethodDef jellyfish_methods[] = {
      "nysiis(string)\n\n"
      "Compute the NYSIIS (New York State Identification and Intelligence\n"
      "System) code for a string."},
-
-    {"porter_stem", jellyfish_porter_stem, METH_VARARGS,
-     "porter_stem(string)\n\n"
-     "Return the result of running the Porter stemming algorithm on "
-     "a single-word string."},
 
     {NULL, NULL, 0, NULL}
 };
